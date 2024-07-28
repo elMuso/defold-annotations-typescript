@@ -26,3 +26,9 @@ If you find a typo in the annotations or outdated meta information, create an is
 ### Settings
 
 By default it uses Defold version 1.9.1 , you can change this by editing the src_new/settings.ts file. There are other useful conditionals there to remove information from the final build
+
+### Todo
+- [ ] Use namespace specific constants to have specific parameter return values. Maybe enums?
+- [ ] Test the code and table, table_array, table_map
+- [ ] Expand table declarations from the official documentation
+- [ ] Implement on a project
