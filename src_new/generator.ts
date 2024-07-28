@@ -59,7 +59,7 @@ function generate_function(input: MFunc): string {
 	if (input.name == "delete") {
 		return (
 			output +
-			"\nfunction delete$(id: string | hash | url | table, recursive: boolean);\nexport { delete$ as delete }"
+			"\nfunction delete$(id: string | hash | url | hash[], recursive: boolean):void;\nexport { delete$ as delete }"
 		);
 	}
 	output =
@@ -115,7 +115,7 @@ function gen_types(params: MParameter[]): string {
 //! Be careful while editing
 function create_optional_output(input: MModule): string {
 	let cache: Record<string, any> = {};
-	let output = "const dfld = {";
+	let output = "export const dfld = {";
 	//Use this fucntion to wrap text. For now the order of wrapping is reversed but if defold
 	//Decides to add 3 nested namespaces it will break.
 	const wrapper = function (name: string, input: string, indent: number) {
@@ -209,7 +209,7 @@ function add_data(input: any, indent: number): string {
 		pretext: string
 	) {
 		let starts = indent_text(
-			pretext + "\nnamespace " + mod.name + "{",
+			"\n" + pretext + "namespace " + mod.name + "{",
 			lindent
 		);
 		let ends = indent_text("\n}\n", lindent);
@@ -224,9 +224,9 @@ function add_data(input: any, indent: number): string {
 	};
 
 	if (input.tag == MType.MODULE || input.tag == MType.NESTED_MODULE) {
-		let ptxt = "";
+		let ptxt = "declare ";
 		if (input.tag == MType.NESTED_MODULE) {
-			ptxt = "export ";
+			ptxt = "";
 		}
 		let obj = input as MModule;
 		output = output + make_documentation(obj.documentation);

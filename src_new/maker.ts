@@ -75,13 +75,18 @@ function extract_parameters(input: any): MParameter[] {
 		nm = nm.replace("-", "_");
 		nm = nm.replace("repeat", "should_repeat"); //! HOTFIX: This is needed, don't delete
 		// We are inverting the spread order...
-		if (nm.includes("...")) {
-			nm = "..." + nm.replace("...", "");
-		}
+
 		let types = [];
 		if (!val.types) continue;
+		if (nm.includes("...")) {
+			nm = "..." + nm.replace("...", "");
+			isOptional = false;
+		}
 		for (const rawtype of val.types) {
 			let rtype = rawtype;
+			if (nm.includes("...")) {
+				rtype = rtype + "[]";
+			}
 			for (const name in replace_param_list) {
 				if (!has(replace_param_list, name)) continue;
 

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /*[[
     requiredTypes.d.ts
     https://github.com/elMuso/defold-annotations-typescript
@@ -8,6 +10,7 @@
     This is to make typescript aware of some defold base types. While
     in the original library this was done via config. Here it is injected into the final index.d.ts
     --*/
+
 type matrix4 = {
 	c0: vector4;
 	c1: vector4;
@@ -31,7 +34,7 @@ type matrix4 = {
 	m33: number;
 };
 
-namespace on_input {
+declare namespace on_input {
 	type touch = {
 		/** Accelerometer x value (if present).*/
 		acc_x: number | undefined;
@@ -87,7 +90,7 @@ namespace on_input {
 		y: number | undefined;
 	};
 }
-namespace physics {
+declare namespace physics {
 	type raycast_response = {
 		/** The fraction of the hit measured along the ray, where 0 is the start of the ray and 1 is the end*/
 		fraction: number;
@@ -104,7 +107,7 @@ namespace physics {
 	};
 }
 
-namespace resource {
+declare namespace resource {
 	type animation = {
 		/** Optional flip the animation horizontally, the default value is false*/
 		flip_horizontal: boolean | nil;
@@ -127,9 +130,9 @@ namespace resource {
 	};
 	type atlas = {
 		/**  A list of the animations in the atlas*/
-		animations: { animation };
+		animations: animation[];
 		/**  A list of the geometries that should map to the texture data*/
-		geometries: { geometry };
+		geometries: geometry[];
 		/**  The path to the texture resource, e.g "/main/my_texture.texturec"*/
 		texture: string | hash;
 	};
@@ -137,11 +140,11 @@ namespace resource {
 		/** The name of the geometry. Used when matching animations between multiple atlases*/
 		id: string;
 		/** A list of the indices of the geometry in the form { i0, i1, i2, ..., in }. Each tripe in the list represents a triangle.*/
-		indices: { number };
+		indices: number[];
 		/** A list of the uv coordinates in texture space of the geometry in the form of { u0, v0, u1, v1, ..., un, vn }*/
-		uvs: { number };
+		uvs: number[];
 		/** A list of the vertices in texture space of the geometry in the form { px0, py0, px1, py1, ..., pxn, pyn }*/
-		vertices: { number };
+		vertices: number[];
 	};
 }
 
@@ -174,19 +177,47 @@ type vector4 = {
 /**Hashes a string.
  * All ids in the engine are represented as hashes,
  * so a string needs to be hashed before it can be compared with an id. */
-function hash(string: string): hash;
+declare function hash(string: string): hash;
 /**Get hex representation of a hash value as a string.
  * The returned string is always padded with leading zeros. */
-function hash_to_hex(hash: hash): string;
+declare function hash_to_hex(hash: hash): string;
 /**Pretty printing of Lua values.
  * This function prints Lua values in a manner similar to lua.Lua.print,
  * but will also recurse into tables and pretty print them. There is a
  * limit to how deep the function will recurse. */
-function pprint(value: any): void;
+declare function pprint(value: any): void;
 
-type node = unknown;
+/**Printing of Lua values.
+ * This function prints values */
+declare function print(value: any): void;
+
+type array = any[];
+type table = any;
+
+//! WARNING: This two types are made to ditinguish parameters and return types.
+//! they might break functionality but allow for cleaner code.
+//! For types that merge this two or are unknown (like json) the type table is used
+type table_array = any[]; //? Is this right?
+type table_map = Record<string, any>; //? Is this right?
+///
+type resource_handle = string; //? Is this right?
+type integer = number;
+type constant_buffer = object; //? Is this right? It seems to be a partial table
+type render_predicate = any; //? Is this right?
+type render_target = any; //? Is this right?
+type resource_data = object; //? Is this right?
+type socket_client = object; //? Is this right?
+type socket_master = object; //? Is this right?
+type socket_unconnected = object; //? Is this right?
+type buffer_stream = any; //? Is this right?
+type buffer_data = any; //? Is this right?
+type buffer = object; //? Is this right?
+type b2BodyType = any; //? Is this right?
+type b2Body = any; //? Is this right?
+type b2World = any; //? Is this right?
+type nil = undefined;
+type node = object;
 type float = number;
-type self = any;
 type hash = string;
 type constant = number;
 type quaternion = {

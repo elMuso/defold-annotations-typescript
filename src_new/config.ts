@@ -90,6 +90,22 @@ const config = {
 	// We replace the type of a specific function. It can be either a param or return value
 	// This is replaced first
 	specific_replace: {
+		//Replace table with specific types
+		"camera.get_cameras": {
+			return_table_cameras: "table_array",
+		},
+		"crash.get_backtrace": {
+			return_table_backtrace: "table_map",
+		},
+		"factory.create": {
+			param_table_properties: "table_map",
+		},
+		"gui.set": {
+			param_table_options: "table_map",
+		},
+		"gui.get": {
+			param_table_options: "table_map",
+		},
 		"buffer.create": {
 			param_table_declaration:
 				"{ name:hash|string, type:constant, count:number }[]",
@@ -100,8 +116,58 @@ const config = {
 		"buffer.get_metadata": {
 			return_table_values: "number[]|nil",
 		},
+		"msg.post": {
+			param_table_message: "table_map|nil",
+		},
+		"physics.raycast_async": {
+			param_table_groups: "hash[]",
+		},
+		"physics.create_joint": {
+			param_table_properties: "table_map",
+		},
+		"physics.set_joint_properties": {
+			param_table_properties: "table_map",
+		},
+		"profiler.view_recorded_frame": {
+			param_table_frame_index: "table_map",
+		},
+		"render.dispatch_compute": {
+			param_table_options: "table_map",
+		},
+		"socket.select": {
+			param_table_recvt: "table_array",
+			param_table_sendt: "table_array",
+			return_table_sockets_r: "table_array",
+			return_table_sockets_w: "table_array",
+		},
 		"collectionfactory.create": {
-			return_table_ids: "table<string|hash, string|hash>",
+			param_table_properties: "table_map",
+			return_table_ids: "Record<string|hash, string|hash>",
+		},
+		"vmath.vector": {
+			param_table_t: "number[]",
+		},
+		"tilemap.get_tile_info": {
+			return_table_tile_info: "table_map",
+		},
+		"sys.serialize": {
+			param_table_table: "table_map",
+		},
+		"sys.deserialize": {
+			return_table_table: "table_map",
+		},
+		"sys.save": {
+			return_table_table: "any", //! This could be better but leave it like this
+		},
+		"sys.load": {
+			return_table_loaded: "any", //! This could be better but leave it like this
+		},
+		"render.clear": {
+			return_table_buffers: "any", //! This could be better but leave it like this
+		},
+		"collectionfactory.load": {
+			param_table_complete_function:
+				"(self: any, url: url, result: boolean) => void",
 		},
 		"collectionproxy.get_resources": {
 			return_table_resources: "string[]",
@@ -112,15 +178,45 @@ const config = {
 		"crash.get_modules": {
 			return_table_modules: "{ name:string, address:string }[]",
 		},
+		"factory.load": {
+			param_table_complete_function:
+				"(self: any, url: url, result: boolean) => void",
+		},
+		"go.animate": {
+			param_table_complete_function:
+				"(self: any, url: url, property: hash) => void",
+		},
+		"go.set": {
+			param_table_value: "any",
+			param_table_options: "table_map",
+		},
+		"go.get": {
+			param_table_options: "{index:integer, key:hash}",
+		},
+		"gui.animate": {
+			param_table_complete_function: "(self: any, node: node) => void",
+		},
+		"gui.play_particlefx": {
+			param_table_emitter_state_function:
+				"(self: any, node: hash|nil, emitter: hash, state: constant) => void",
+		},
+		"html5.set_interaction_listener": {
+			param_table_callback: "(self: any) => void | nil",
+		},
+		"http.request": {
+			param_table_callback:
+				"(self: any, id: hash, response: {status: number, response:string, headers:any, path:string, error:string}) => void",
+		},
 		"gui.clone_tree": {
-			return_table_clones: "table<string|hash, node>",
+			return_table_clones: "Record<string|hash, node>",
 		},
 		"gui.get_tree": {
-			return_table_clones: "table<string|hash, node>",
+			return_table_clones: "Record<string|hash, node>",
 		},
 		"gui.play_flipbook": {
 			param_table_play_properties:
 				"{ offset:number|nil, playback_rate:number|nil }",
+			param_table_complete_function: "(self: any, node: node) => void",
 		},
 		"gui.stop_particlefx": {
 			param_table_options: "{ clear:boolean|nil }",
@@ -131,25 +227,63 @@ const config = {
 		"json.encode": {
 			param_table_options: "{ encode_empty_table_as_object:string }",
 		},
+		"liveupdate.store_resource": {
+			param_table_callback:
+				"(self: any, hexdigest: string, status: boolean) => void",
+		},
+		"liveupdate.store_manifest": {
+			param_table_callback: "(self:any, status:constant) => void",
+		},
+		"liveupdate.store_archive": {
+			param_table_callback: "(self:any, status:constant) => void",
+		},
+		"liveupdate.add_mount": {
+			param_table_callback: "() => void",
+		},
+		"particlefx.play": {
+			param_table_emitter_state_function:
+				"(self:any, id:hash, emitter:hash, state:constant) => void",
+		},
 		"particlefx.stop": {
 			param_table_options: "{ clear:boolean|nil }",
 		},
 		"sprite.play_flipbook": {
+			param_table_play_properties: "{offset:number,playback_rate:number}",
+			param_table_complete_function:
+				"(self:any, message_id:hash, message:{current_tile:number,id:hash}, sender:url)=>void",
 			param_table_options:
 				"{ offset:number|nil, playback_rate:number|nil }",
 		},
 		"sound.play": {
 			param_table_play_properties:
 				"{ delay:number|nil, gain:number|nil, pan:number|nil, speed:number|nil }",
+			param_table_complete_function:
+				"(self:any, message_id:hash, message:{play_id:number}, sender:url)=>void",
 		},
 		"sound.stop": {
 			param_table_stop_properties: "{ play_id:number }",
 		},
+		"socket.dns.tohostname": {
+			return_table_resolved: "table_map|string",
+		},
+		"socket.dns.toip": {
+			return_table_resolved: "table_map|string",
+		},
+		"socket.dns.getaddrinfo": {
+			return_table_resolved: "table_map|nil",
+		},
+		"socket.dns.getnameinfo": {
+			return_table_resolved: "table_map|nil",
+		},
 		"model.play_anim": {
 			param_table_play_properties:
 				"{ blend_duration:number|nil, offset:number|nil, playback_rate:number|nil}",
+			param_table_complete_function:
+				"(self:any, message_id:hash, message:{animation_id:hash, playback:constant}, sender:url) => void",
 		},
 		"image.load": {
+			param_options:
+				"{premultiply_alpha:boolean,flip_vertically:boolean}",
 			return_table_image:
 				"{ width:number, height:number, type:constant, buffer:string }",
 		},
@@ -161,6 +295,7 @@ const config = {
 			return_table_properties: "{ collide_connected:boolean|nil }",
 		},
 		"physics.raycast": {
+			param_table_groups: "hash[]",
 			param_table_options: "{ all:boolean|nil }",
 			return_table_result:
 				"physics.raycast_response[]|physics.raycast_response",
@@ -172,6 +307,10 @@ const config = {
 		"physics.set_shape": {
 			param_table_table:
 				"{ diameter:number|nil, dimensions:vector3|nil, height:number|nil }",
+		},
+		"physics.set_listener": {
+			param_table_callback:
+				"(self:any, event:constant, data:any) => void",
 		},
 		"resource.create_atlas": {
 			param_table_table: "resource.atlas",
@@ -228,7 +367,7 @@ const config = {
 		},
 		"render.render_target": {
 			param_table_parameters:
-				"table<number, { format:number, width:number, height:number, min_filter:number|nil, mag_filter:number|nil, u_wrap:number|nil, v_wrap:number|nil, flags:number|nil}>",
+				"Record<number, { format:number, width:number, height:number, min_filter:number|nil, mag_filter:number|nil, u_wrap:number|nil, v_wrap:number|nil, flags:number|nil}>",
 		},
 		"render.set_camera": {
 			param_table_options: "{ use_frustum:boolean|nil }",
@@ -238,6 +377,20 @@ const config = {
 		},
 		"sound.get_groups": {
 			return_table_groups: "hash[]",
+		},
+		"socket.newtry": {
+			param_table_finalizer: "()=>void",
+			return_table_try: "()=>void",
+		},
+		"socket.protect": {
+			param_table_func: "()=>void",
+			//! Warning this safe func return type might be really wrong. But i don't know what it should be
+			return_table_safe_func: "(fun:()=>void)=>void",
+		},
+		"socket.skip": {
+			"return_table_retD+1": "object|nil",
+			"return_table_retD+2": "object|nil",
+			return_table_retN: "object|nil",
 		},
 		"sys.get_sys_info": {
 			param_table_options: "{ ignore_secure:boolean|nil }",
@@ -255,12 +408,28 @@ const config = {
 			return_table_ifaddrs:
 				"{ name:string, address:string|nil, mac:string|nil, up:boolean, running:boolean }",
 		},
+		"sys.load_buffer_async": {
+			param_table_status_callback:
+				"(self:any, request_id:hash, result:{status:constant, buffer:buffer|object})=>void",
+		},
+		"sys.set_error_handler": {
+			param_table_error_handler:
+				"(source:string, message:string, traceback:string)=>void",
+		},
 		"sys.open_url": {
 			param_table_attributes: "{ target:string|nil, name:string|nil }",
 		},
 		"timer.get_info": {
 			return_table_data:
 				"{ time_remaining:number, delay:number, repeating:boolean }",
+		},
+		"timer.delay": {
+			param_table_callback:
+				"(self:any, handle:number, time_elapsed:number)=>void",
+		},
+		"window.set_listener": {
+			param_table_callback:
+				"(self:any, event:constant, data:{width:number,height:number})=>void|nil",
 		},
 	},
 
@@ -274,6 +443,7 @@ const config = {
 		"vmath.matrix4": "matrix4",
 		vector: "vector4|vector3",
 		resource: "resource_data",
+		bool: "boolean",
 		buffer: "buffer_data",
 		bufferstream: "buffer_stream",
 		handle: "resource_handle",
