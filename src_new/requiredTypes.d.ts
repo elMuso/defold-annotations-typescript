@@ -198,7 +198,7 @@ type table = any;
 //! they might break functionality but allow for cleaner code.
 //! For types that merge this two or are unknown (like json) the type table is used
 type table_array = any[]; //? Is this right?
-type table_map = Record<string, any>; //? Is this right?
+type table_map = Record<any, any>; //? Is this right?
 ///
 type resource_handle = string; //? Is this right?
 type integer = number;
