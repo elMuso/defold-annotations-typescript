@@ -6,7 +6,19 @@ It parses the official documentation from [Defold](https://defold.com) and trans
 
 Node 20.15.1 was used for this. Might not run with other versions
 
-<!-- Generated annotations are available on the [Releases](https://github.com/astrochili/defold-annotations/releases) page. -->
+# Integrate with ts-defold
+
+By default ts-defold provides their own types already on tsconfig.json. If you want to replace(or test) this repository i suggest you make a defold-ts project as normal, then after it's done, download the latest .zip [Release](https://github.com/elMuso/defold-annotations-typescript/releases) and extract anywhere on yout project folder.
+
+You will need to modify this line from `tsconfig.json`
+
+`"types": ["@typescript-to-lua/language-extensions", "@ts-defold/types"],`
+
+to
+
+`"types": ["@typescript-to-lua/language-extensions", "lua-types/5.1"],`
+
+and you should be good to go.
 
 ## Use case
 
@@ -28,7 +40,8 @@ If you find a typo in the annotations or outdated meta information, create an is
 By default it uses Defold version 1.9.1 , you can change this by editing the src_new/settings.ts file. There are other useful conditionals there to remove information from the final build
 
 ### Todo
-- [ ] Use namespace specific constants to have specific parameter return values. Maybe enums?
-- [ ] Test the code and table, table_array, table_map
-- [ ] Expand table declarations from the official documentation
-- [ ] Implement on a project
+
+-   [ ] Use namespace specific constants to have specific parameter return values. Maybe enums?
+-   [ ] Test the code and table, table_array, table_map
+-   [ ] Expand table declarations from the official documentation
+-   [ ] Implement on a project
