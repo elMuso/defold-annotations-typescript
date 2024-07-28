@@ -187,10 +187,6 @@ declare function hash_to_hex(hash: hash): string;
  * limit to how deep the function will recurse. */
 declare function pprint(value: any): void;
 
-/**Printing of Lua values.
- * This function prints values */
-declare function print(value: any): void;
-
 type array = any[];
 type table = any;
 
@@ -226,31 +222,3 @@ type quaternion = {
 	z: number;
 	w: number;
 };
-// global type array = table
-
-// global record b2Body userdata end
-// global type b2BodyType =  number
-// global record b2World userdata end
-// global type bool =  boolean
-// global record buffer_data userdata end
-// global record buffer_stream userdata end
-// global record constant userdata end
-// global record constant_buffer userdata end
-// global type float =  number
-// global record hash userdata end
-// global record node userdata end
-// global type quaternion =  vector4
-// global record render_predicate userdata end
-// global record render_target userdata end
-// global record resource_data userdata end
-// global record resource_handle userdata end
-// global record socket_client userdata end
-// global record socket_master userdata end
-// global record socket_unconnected userdata end
-// global record bufferstream userdata end ---? Is this correct
-// global record predicate userdata end ---? Is this correct
-// global type vector = table ---? Is this correct
-// global type master = table ---? Is this correct
-// global type unconnected = table ---? Is this correct
-// global type client = table ---? Is this correct
-// global type handle = any ---? Is this correct
