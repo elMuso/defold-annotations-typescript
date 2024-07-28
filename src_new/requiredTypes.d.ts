@@ -1,3 +1,6 @@
+/** @noSelfInFile */
+/// <reference types="lua-types/5.1" />
+/// <reference types="@typescript-to-lua/language-extensions" />
 /* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /*[[

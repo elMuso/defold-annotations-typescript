@@ -35,31 +35,6 @@ const config = {
 		"unconnected:*",
 		"socket.dns",
 	],
-
-	//We replace the callback names with it's respective type since teal doesn't support named calllback parameters
-	function_replacement: [
-		"self",
-		"url",
-		"result",
-		"property",
-		"node",
-		"emitter",
-		"state",
-		"status",
-		"hexdigest",
-		"message",
-		"data",
-		"request_id",
-		"handle",
-		"any_id",
-		"id",
-		"time_elapsed",
-		"traceback",
-		"event",
-		"sender",
-		"source",
-		"response",
-	],
 	info_url: "https://d.defold.com/stable/" + info_filename,
 	doc_url: function (version: string): string {
 		return (
@@ -298,7 +273,7 @@ const config = {
 			param_table_groups: "hash[]",
 			param_table_options: "{ all:boolean|nil }",
 			return_table_result:
-				"physics.raycast_response[]|physics.raycast_response",
+				"physics.raycast_response[]|physics.raycast_response|nil", //? The documentation says it returns a array but the examples show it can return nil or single
 		},
 		"physics.get_shape": {
 			return_table_table:
