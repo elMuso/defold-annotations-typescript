@@ -1,0 +1,18 @@
+{
+	"devDependencies": {
+		"@eslint/js": "^9.7.0",
+		"@types/decompress": "^4.2.7",
+		"globals": "^15.8.0",
+		"tsx": "^4.16.2",
+		"typescript": "^5.5.4"
+	},
+	"main": "./main.ts",
+	"scripts": {
+		"start": "npx tsx ./main.ts"
+	},
+	"dependencies": {
+		"@types/node": "^20.14.12",
+		"decompress": "^4.2.1",
+		"html-entities": "^2.5.2"
+	}
+}

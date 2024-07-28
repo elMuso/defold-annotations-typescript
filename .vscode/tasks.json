@@ -1,0 +1,9 @@
+{
+    "tasks": [
+        {
+            "label": "run_program",
+            "type": "shell",
+            "command": "npm run start",
+          },
+    ]
+}

@@ -1,0 +1,16 @@
+{
+	"license": {
+		"prefix": "license",
+		"description": "license",
+		"scope": "typescript",
+		"body": [
+			"/*[[",
+			"    ${1}.ts",
+			"    https://github.com/elMuso/defold-annotations-typescript",
+			"    with some code from on github.com/astrochili/defold-annotations",
+			"    Copyright (c) 2024 elMuso",
+			"    MIT license. See LICENSE for details.",
+			"    --*/"
+		]
+	}
+}

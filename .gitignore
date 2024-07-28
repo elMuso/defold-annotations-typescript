@@ -1,0 +1,14 @@
+# System
+.DS_Store
+Thumbs.db
+
+# Temporary
+/doc
+info.json
+ref-doc.zip
+json_list.txt
+
+# Generated
+/api
+lock
+/node_modules
