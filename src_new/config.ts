@@ -117,7 +117,7 @@ const config = {
 		},
 		"collectionfactory.create": {
 			param_table_properties: "table_map",
-			return_table_ids: "Record<string|hash, string|hash>",
+			return_table_ids: "Record<hash, hash>",
 		},
 		"vmath.vector": {
 			param_table_t: "number[]",

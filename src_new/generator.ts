@@ -59,7 +59,7 @@ function generate_function(input: MFunc): string {
 	if (input.name == "delete") {
 		return (
 			output +
-			"\nfunction delete$(id: string | hash | url | hash[], recursive: boolean):void;\nexport { delete$ as delete }"
+			"\nfunction delete$(id: string | hash | url | hash[]| Record<any,any>, recursive?: boolean):void;\nexport { delete$ as delete }"
 		);
 	}
 	output =
