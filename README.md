@@ -18,7 +18,9 @@ to
 
 `"types": ["@typescript-to-lua/language-extensions", "lua-types/5.1"],`
 
-and you should be good to go.
+Then extract `index.d.ts` on your @types folder (or anywhere, but this folder is already created by ts-defold) and `dfld.ts` on your `src/modules` folder (or anywhere inside the src folder, but again this folder is already created by ts-defold) 
+
+Now you should be good to go.
 
 ## Use case
 
