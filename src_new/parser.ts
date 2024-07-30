@@ -140,10 +140,10 @@ function parse_module(
 			Maker.addfunction(itemIndex, uniqueName, single);
 		} else if (utype == MType.PROPERTY) {
 			//! Properties in defold use go_set, generate accordingly
-			let msgModule = createIfNotExisting(bufferIndex, "dfld", {
+			let msgModule = createIfNotExisting(bufferIndex, "dprop", {
 				documentation: "",
 				tag: MType.MODULE,
-				name: "dfld",
+				name: "dprop",
 				items: [],
 				modules: [],
 			}) as MModule;
@@ -156,10 +156,10 @@ function parse_module(
 		} else if (utype == MType.MESSAGE) {
 			//  * All messages are strings, so we make a single module with them
 			//  ? Consider markin single functions for them?
-			let msgModule = createIfNotExisting(bufferIndex, "dfld", {
+			let msgModule = createIfNotExisting(bufferIndex, "dmsg", {
 				documentation: "",
 				tag: MType.MODULE,
-				name: "dfld",
+				name: "dmsg",
 				items: [],
 				modules: [],
 			}) as MModule;

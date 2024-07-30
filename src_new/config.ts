@@ -117,7 +117,7 @@ const config = {
 		},
 		"collectionfactory.create": {
 			param_table_properties: "table_map",
-			return_table_ids: "Record<hash, hash>",
+			return_table_ids: "LuaMap<hash, hash>",
 		},
 		"vmath.vector": {
 			param_table_t: "number[]",
@@ -183,10 +183,10 @@ const config = {
 				"(self: any, id: hash, response: {status: number, response:string, headers:any, path:string, error:string}) => void",
 		},
 		"gui.clone_tree": {
-			return_table_clones: "Record<string|hash, node>",
+			return_table_clones: "LuaMap<string|hash, node>",
 		},
 		"gui.get_tree": {
-			return_table_clones: "Record<string|hash, node>",
+			return_table_clones: "LuaMap<string|hash, node>",
 		},
 		"gui.play_flipbook": {
 			param_table_play_properties:

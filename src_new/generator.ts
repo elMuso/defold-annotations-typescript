@@ -89,7 +89,7 @@ function generate_variable(input: MVar): string {
 }
 
 function make_documentation(docs: string): string {
-	if (!docs) return "";
+	if (!docs || !settings.generate_documentation) return "";
 	let lines = docs.split("\n");
 	let mlines = [];
 	let output = "";
@@ -111,11 +111,13 @@ function gen_types(params: MParameter[]): string {
 	return output;
 }
 
-//! WARNING, this code has grown out quite a bit and it's fragile.
-//! Be careful while editing
-function create_optional_output(input: MModule): string {
+function create_nested_tree(
+	rootName: string,
+	input: MModule,
+	generator: (item: any) => string
+): string {
 	let cache: Record<string, any> = {};
-	let output = "export const dfld = {";
+	let output = `export const ${rootName} = {`;
 	//Use this fucntion to wrap text. For now the order of wrapping is reversed but if defold
 	//Decides to add 3 nested namespaces it will break.
 	const wrapper = function (name: string, input: string, indent: number) {
@@ -134,69 +136,82 @@ function create_optional_output(input: MModule): string {
 			cache[itm.owner].push(item);
 		}
 	}
+
 	for (const name in cache) {
+		let localOutput = "";
 		if (!Object.prototype.hasOwnProperty.call(cache, name)) return "";
 		const items = cache[name];
-		let localoutput = "";
-
 		for (const item of items) {
-			if (item.tag == MType.PROPERTY) {
-				let itm = item as MProperty;
-				localoutput =
-					localoutput + make_documentation(itm.documentation);
-				localoutput =
-					localoutput + "\np_" + itm.name + ': "' + itm.name + '",';
-			} else if (item.tag == MType.MESSAGE) {
-				// Some messages are passed back. If the name has a * the parser decided is a return
-				let isReport = item.name.includes("*");
-				let itm = item as MMessage;
-				localoutput =
-					localoutput + make_documentation(itm.documentation);
-				let itemName = itm.name.substring(
-					isReport == true ? 1 : 0,
-					itm.name.length
-				);
-				//The message input received
-				let tps = gen_types(itm.params);
-				let hasData = tps.length != 0;
-				if (isReport) {
-					localoutput =
-						localoutput +
-						`\nmsg_id_${itemName}: hash("${itemName}"),`;
-				} else if (itm.owner == "sys" || itm.owner == "render") {
-					//Spetial handle because id is the same for this modules
-					const fixed_id =
-						itm.owner == "sys"
-							? "@system:"
-							: itm.owner == "render"
-							? "@render:"
-							: "";
-					localoutput =
-						localoutput +
-						(hasData
-							? `\nmsg_${itemName}: (data:${tps}) => msg.post("${fixed_id}", "${itemName}", data),`
-							: `\nmsg_${itemName}: () => msg.post("${fixed_id}", "${itemName}"),`);
-				} else {
-					//Normal message, id is required
-					localoutput =
-						localoutput +
-						(hasData
-							? `\nmsg_${itemName}: (id: string, data:${tps}) => msg.post(id, "${itemName}", data),`
-							: `\nmsg_${itemName}: (id: string) => msg.post(id, "${itemName}"),`);
-				}
-			}
+			localOutput = localOutput + generator(item);
 		}
-
 		let indn = 0;
 		let namespaces = name.split(".");
 		for (const namespc of namespaces) {
 			indn = indn + 1;
-			localoutput = wrapper(namespc, localoutput, indn);
+			localOutput = wrapper(namespc, localOutput, indn);
 		}
-		output = output + localoutput;
+		output = output + localOutput;
 	}
 	output = output + "\n}";
 	return output;
+}
+
+//! WARNING, this code has grown out quite a bit and it's fragile.
+//! Be careful while editing
+function create_optional_output(input: MModule): string {
+	return create_nested_tree("dmsg", input, (item) => {
+		let localoutput = "";
+		let itm = item as MMessage;
+		let isReport = item.name.includes("*");
+		localoutput = localoutput + make_documentation(itm.documentation);
+		let itemName = itm.name.substring(
+			isReport == true ? 1 : 0,
+			itm.name.length
+		);
+		//The message input received
+		let tps = gen_types(itm.params);
+		let hasData = tps.length != 0;
+		if (isReport) {
+			localoutput = localoutput + `\n${itemName}: hash("${itemName}"),`;
+		} else if (itm.owner == "sys" || itm.owner == "render") {
+			//Spetial handle because id is the same for this modules
+			const fixed_id =
+				itm.owner == "sys"
+					? "@system:"
+					: itm.owner == "render"
+					? "@render:"
+					: "";
+			localoutput =
+				localoutput +
+				(hasData
+					? `\n${itemName}: (data:${tps}) => msg.post("${fixed_id}", "${itemName}", data),`
+					: `\n${itemName}: () => msg.post("${fixed_id}", "${itemName}"),`);
+		} else {
+			//Normal message, id is required
+			localoutput =
+				localoutput +
+				(hasData
+					? `\n${itemName}: (id: string, data:${tps}) => msg.post(id, "${itemName}", data),`
+					: `\n${itemName}: (id: string) => msg.post(id, "${itemName}"),`);
+		}
+		return localoutput;
+	});
+}
+
+function create_property_output(input: MModule): string {
+	return create_nested_tree("dprop", input, (item) => {
+		let localOutput = "";
+		let itm = item as MProperty;
+		let read_only = itm.documentation.includes("READ ONLY");
+		let tps = itm.type;
+		tps = tps.replace("bool", "boolean");
+		if (read_only && !settings.generate_documentation) {
+			localOutput += "\n/** READ ONLY*/";
+		}
+		localOutput = localOutput + make_documentation(itm.documentation);
+		localOutput += `\n${itm.name}:"${itm.name}",`;
+		return localOutput;
+	});
 }
 
 function add_data(input: any, indent: number): string {
@@ -242,21 +257,27 @@ function add_data(input: any, indent: number): string {
 
 function generate(input: MModule[]): {
 	typedata: string;
-	optionaldata: string;
+	messagedata: string;
+	propertydata: string;
 } {
 	let output = "";
-	let optional_output = "";
+	let msg_output = "";
+	let prop_output = "";
 	for (const mod of input) {
-		if (mod.name == "dfld") {
-			optional_output = create_optional_output(mod);
-		} else {
+		if (mod.name == "dmsg") {
+			msg_output = create_optional_output(mod);
+		} else if (mod.name == "dprop") {
+			prop_output = create_property_output(mod);
+		}
+		{
 			output = output + add_data(mod, 0);
 		}
 	}
 	const requiredTypes = Utils.read_file("./src_new/requiredTypes.d.ts");
 	return {
 		typedata: requiredTypes + output,
-		optionaldata: optional_output,
+		messagedata: msg_output,
+		propertydata: prop_output,
 	};
 }
 

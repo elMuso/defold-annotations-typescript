@@ -18,8 +18,8 @@ async function generate_documentation() {
 	Utils.save_file(JSON.stringify(filtered), api_path + "raw_data.json");
 	const output = Generator.generate(filtered);
 	Utils.save_file(output.typedata, api_path + "index.d.ts");
-	Utils.save_file(output.optionaldata, api_path + "dfld.ts");
-	console.log("Parsing done. Check the api folder");
+	Utils.save_file(output.messagedata, api_path + "dmsg.ts");
+	Utils.save_file(output.propertydata, api_path + "dprop.ts");
 }
 
 generate_documentation();

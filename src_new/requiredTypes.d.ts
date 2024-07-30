@@ -13,29 +13,73 @@
     This is to make typescript aware of some defold base types. While
     in the original library this was done via config. Here it is injected into the final index.d.ts
     --*/
+/** Objects that are treated as primitives while i figure out how they work */
+type resource_data = object; //? Is this right?
+type float = number;
+type render_predicate = any; //? Is this right?
+type socket_master = object; //? Is this right?
+type socket_unconnected = object; //? Is this right?
+type socket_client = object; //? Is this right?
+type resource_handle = string; //? Is this right?
+type constant_buffer = object; //? Is this right? It seems to be a partial table
+type render_target = any; //? Is this right?
+type integer = number;
+type buffer_stream = any; //? Is this right?
+type buffer_data = object; //? Is this right?
+type constant = number;
+type b2Body = any; //? Is this right?
+type b2World = any; //? Is this right?
+type b2BodyType = any; //? Is this right?
+type nil = undefined;
+type array = any[];
+type table = any;
+//! WARNING: This two types are made to ditinguish parameters and return types.
+//! they might break functionality but allow for cleaner code.
+//! For types that merge this two or are unknown (like json) the type table is used
+type table_array = any[]; //? Is this right?
+type table_map = Record<any, any>; //? Is this right?
+///
 
-type matrix4 = {
-	c0: vector4;
-	c1: vector4;
-	c2: vector4;
-	c3: vector4;
-	m00: number;
-	m01: number;
-	m02: number;
-	m03: number;
-	m10: number;
-	m11: number;
-	m12: number;
-	m13: number;
-	m20: number;
-	m21: number;
-	m22: number;
-	m23: number;
-	m30: number;
-	m31: number;
-	m32: number;
-	m33: number;
-};
+declare namespace resource {
+	type animation = {
+		/** Optional flip the animation horizontally, the default value is false*/
+		flip_horizontal: boolean | nil;
+		/** Optional flip the animation vertically, the default value is false*/
+		flip_vertical: boolean | nil;
+		/** Optional fps of the animation, the default value is 30*/
+		fps: integer | nil;
+		/** Index to the last geometry of the animation (non-inclusive). Indices are lua based and must be in the range of 1 .. in atlas.*/
+		frame_end: integer;
+		/** Index to the first geometry of the animation. Indices are lua based and must be in the range of 1 .. in atlas.*/
+		frame_start: integer;
+		/** The height of the animation*/
+		height: integer;
+		/** The id of the animation, used in e.g sprite.play_animation*/
+		id: string;
+		/** Optional playback mode of the animation, the default value is go.PLAYBACK_ONCE_FORWARD*/
+		playback: constant | nil;
+		/** The width of the animation*/
+		width: integer;
+	};
+	type atlas = {
+		/**  A list of the animations in the atlas*/
+		animations: animation[];
+		/**  A list of the geometries that should map to the texture data*/
+		geometries: geometry[];
+		/**  The path to the texture resource, e.g "/main/my_texture.texturec"*/
+		texture: string | hash;
+	};
+	type geometry = {
+		/** The name of the geometry. Used when matching animations between multiple atlases*/
+		id: string;
+		/** A list of the indices of the geometry in the form { i0, i1, i2, ..., in }. Each tripe in the list represents a triangle.*/
+		indices: number[];
+		/** A list of the uv coordinates in texture space of the geometry in the form of { u0, v0, u1, v1, ..., un, vn }*/
+		uvs: number[];
+		/** A list of the vertices in texture space of the geometry in the form { px0, py0, px1, py1, ..., pxn, pyn }*/
+		vertices: number[];
+	};
+}
 
 type TextureHeader = {
 	type: number;
@@ -120,119 +164,258 @@ declare namespace physics {
 		request_id: number;
 	};
 }
+/*[[
+The following code is from https://github.com/thinknathan/ts-defold-types
+It has some little modifications because vscode hates exported types
+MIT license
+]] */
 
-declare namespace resource {
-	type animation = {
-		/** Optional flip the animation horizontally, the default value is false*/
-		flip_horizontal: boolean | nil;
-		/** Optional flip the animation vertically, the default value is false*/
-		flip_vertical: boolean | nil;
-		/** Optional fps of the animation, the default value is 30*/
-		fps: integer | nil;
-		/** Index to the last geometry of the animation (non-inclusive). Indices are lua based and must be in the range of 1 .. in atlas.*/
-		frame_end: integer;
-		/** Index to the first geometry of the animation. Indices are lua based and must be in the range of 1 .. in atlas.*/
-		frame_start: integer;
-		/** The height of the animation*/
-		height: integer;
-		/** The id of the animation, used in e.g sprite.play_animation*/
-		id: string;
-		/** Optional playback mode of the animation, the default value is go.PLAYBACK_ONCE_FORWARD*/
-		playback: constant | nil;
-		/** The width of the animation*/
-		width: integer;
-	};
-	type atlas = {
-		/**  A list of the animations in the atlas*/
-		animations: animation[];
-		/**  A list of the geometries that should map to the texture data*/
-		geometries: geometry[];
-		/**  The path to the texture resource, e.g "/main/my_texture.texturec"*/
-		texture: string | hash;
-	};
-	type geometry = {
-		/** The name of the geometry. Used when matching animations between multiple atlases*/
-		id: string;
-		/** A list of the indices of the geometry in the form { i0, i1, i2, ..., in }. Each tripe in the list represents a triangle.*/
-		indices: number[];
-		/** A list of the uv coordinates in texture space of the geometry in the form of { u0, v0, u1, v1, ..., un, vn }*/
-		uvs: number[];
-		/** A list of the vertices in texture space of the geometry in the form { px0, py0, px1, py1, ..., pxn, pyn }*/
-		vertices: number[];
-	};
+/**
+ * A unique identifier used to reference resources, messages, properties, and other entities within the game.
+ * @see {@link https://defold.com/manuals/addressing/#hashed-identifiers|Addressing Manual}
+ */
+type hash = Readonly<
+	LuaUserdata & {
+		readonly __hash__: unique symbol;
+	}
+>;
+
+/**
+ * A reference to game resources, such as game objects, components, and assets.
+ * @see {@link https://defold.com/manuals/addressing/|Addressing Manual}
+ */
+type url = {
+	socket: hash;
+	path: hash;
+	fragment: hash | undefined;
+};
+
+/**
+ * A representation of a GUI object.
+ * @see {@link https://defold.com/manuals/gui/|GUI Manual}
+ */
+type node = Readonly<
+	LuaUserdata & {
+		readonly __node__: unique symbol;
+	}
+>;
+
+/**
+ * A block of memory that can store binary data.
+ * @see {@link https://defold.com/manuals/buffer/|Buffer Manual}
+ */
+type buffer = object;
+
+/**
+ * Render pipeline predicate.
+ * @see {@link https://defold.com/manuals/render/|Render Manual}
+ */
+type predicate = Readonly<
+	LuaUserdata & {
+		readonly __predicate__: unique symbol;
+	}
+>;
+
+/**
+ * Render pipeline target.
+ * @see {@link https://defold.com/manuals/render/|Render Manual}
+ */
+type rendertarget = Readonly<
+	LuaUserdata & {
+		readonly __rendertarget__: unique symbol;
+	}
+>;
+
+/**
+ * Socket objects.
+ */
+type socketclient = object;
+type socketmaster = object;
+type socketunconnected = object;
+
+/**
+ * Not available in HTML5, iOS, Switch builds
+ * @see {@link https://luajit.org/ext_jit.html|Documentation}
+ */
+declare namespace jit {
+	/** Turns the JIT engine on.  */
+	export function on(): void;
+	/** Turns the JIT engine off. */
+	export function off(): void;
+	/** Enable JIT compilation for a Lua function. */
+	export function on(
+		fn: (...args: any[]) => unknown,
+		recursive?: boolean
+	): void;
+	/** Disable JIT compilation for a Lua function. */
+	export function off(
+		fn: (...args: any[]) => unknown,
+		recursive?: boolean
+	): void;
+	/** Enable JIT compilation for a module. */
+	export function on(arg1: true, recursive?: boolean): void;
+	/** Disable JIT compilation for a module. */
+	export function off(arg1: true, recursive?: boolean): void;
+	/**
+	 * Attach a handler to the compiler pipeline with the given priority.
+	 * The handler is detached if no priority is given.
+	 */
+	export function attach(
+		handler: (...args: any[]) => unknown,
+		priority?: number
+	): void;
+	export function security(): void;
+	export function flush(): void;
+	export const arch: string;
+	/** Contains the version number of the LuaJIT core.  */
+	export const version_num: number;
+	/** Contains the LuaJIT version string. */
+	export const version: string;
+	export const os: string;
 }
 
-type url = {
-	fragment: hash;
-	path: hash;
-	socket: hash;
-};
+/**
+ * A data stream derived from a buffer.
+ * @see {@link https://defold.com/ref/stable/buffer/#buffer.get_stream:buffer-stream_name|API Documentation}
+ */
+type bufferstream = LuaUserdata & number[] & object;
 
-type vector3 = {
+/** @see {@link https://defold.com/ref/stable/vmath/|API Documentation} */
+
+type vector3 = number & {
+	/**
+	 * Addition Operator for Vector3
+	 * @see {@link https://typescripttolua.github.io/docs/advanced/language-extensions#operator-map-types|TSTL Docs}
+	 */
+	add: LuaAdditionMethod<vector3, vector3>;
+	/**
+	 * Subtraction Operator for Vector3
+	 * @see {@link https://typescripttolua.github.io/docs/advanced/language-extensions#operator-map-types|TSTL Docs}
+	 */
+	sub: LuaSubtractionMethod<vector3, vector3>;
+	/**
+	 * Multiplication Operator for Vector3
+	 * @see {@link https://typescripttolua.github.io/docs/advanced/language-extensions#operator-map-types|TSTL Docs}
+	 */
+	mul: LuaMultiplicationMethod<number, vector3>;
+	/**
+	 * Division Operator for Vector3
+	 * @see {@link https://typescripttolua.github.io/docs/advanced/language-extensions#operator-map-types|TSTL Docs}
+	 */
+	div: LuaDivisionMethod<number, vector3>;
+	/**
+	 * Negation Operator for Vector3
+	 * @see {@link https://typescripttolua.github.io/docs/advanced/language-extensions#operator-map-types|TSTL Docs}
+	 */
+	unm: LuaNegationMethod<vector3>;
+
 	x: number;
 	y: number;
 	z: number;
-	//  add: function (vector3): vector3;
-	//  mul: function (number): vector3;
-	//  sub: function (vector3): vector3;
-	//  unm: function (): vector3;
 };
 
-type vector4 = {
-	w: number;
-	x: number;
-	y: number;
-	z: number;
-	// add: function (vector4): vector4
-	// mul: function (number): vector4
-	// sub: function (vector4): vector4
-	// unm: function (): vector4
-};
-/**Hashes a string.
- * All ids in the engine are represented as hashes,
- * so a string needs to be hashed before it can be compared with an id. */
-declare function hash(string: string): hash;
-/**Get hex representation of a hash value as a string.
- * The returned string is always padded with leading zeros. */
-declare function hash_to_hex(hash: hash): string;
-/**Pretty printing of Lua values.
- * This function prints Lua values in a manner similar to lua.Lua.print,
- * but will also recurse into tables and pretty print them. There is a
- * limit to how deep the function will recurse. */
-declare function pprint(value: any): void;
+type vector4 = number & {
+	/**
+	 * Addition Operator for Vector4
+	 * @see {@link https://typescripttolua.github.io/docs/advanced/language-extensions#operator-map-types|TSTL Docs}
+	 */
+	add: LuaAdditionMethod<vector4, vector4>;
+	/**
+	 * Subtraction Operator for Vector4
+	 * @see {@link https://typescripttolua.github.io/docs/advanced/language-extensions#operator-map-types|TSTL Docs}
+	 */
+	sub: LuaSubtractionMethod<vector4, vector4>;
+	/**
+	 * Multiplication Operator for Vector4
+	 * @see {@link https://typescripttolua.github.io/docs/advanced/language-extensions#operator-map-types|TSTL Docs}
+	 */
+	mul: LuaMultiplicationMethod<number, vector4>;
+	/**
+	 * Division Operator for Vector4
+	 * @see {@link https://typescripttolua.github.io/docs/advanced/language-extensions#operator-map-types|TSTL Docs}
+	 */
+	div: LuaDivisionMethod<number, vector4>;
+	/**
+	 * Negation Operator for Vector4
+	 * @see {@link https://typescripttolua.github.io/docs/advanced/language-extensions#operator-map-types|TSTL Docs}
+	 */
+	unm: LuaNegationMethod<vector4>;
 
-type array = any[];
-type table = any;
-
-//! WARNING: This two types are made to ditinguish parameters and return types.
-//! they might break functionality but allow for cleaner code.
-//! For types that merge this two or are unknown (like json) the type table is used
-type table_array = any[]; //? Is this right?
-type table_map = Record<any, any>; //? Is this right?
-///
-type resource_handle = string; //? Is this right?
-type integer = number;
-type constant_buffer = object; //? Is this right? It seems to be a partial table
-type render_predicate = any; //? Is this right?
-type render_target = any; //? Is this right?
-type resource_data = object; //? Is this right?
-type socket_client = object; //? Is this right?
-type socket_master = object; //? Is this right?
-type socket_unconnected = object; //? Is this right?
-type buffer_stream = any; //? Is this right?
-type buffer_data = object; //? Is this right?
-type buffer = object; //? Is this right?
-type b2BodyType = any; //? Is this right?
-type b2Body = any; //? Is this right?
-type b2World = any; //? Is this right?
-type nil = undefined;
-type node = object;
-type float = number;
-type hash = string;
-type constant = number;
-type quaternion = {
 	x: number;
 	y: number;
 	z: number;
 	w: number;
 };
+
+type matrix4 = number & {
+	/**
+	 * Multiplication Operator for Matrix4
+	 * @see {@link https://typescripttolua.github.io/docs/advanced/language-extensions#operator-map-types|TSTL Docs}
+	 */
+	mul: LuaMultiplicationMethod<number, matrix4> &
+		LuaMultiplicationMethod<vector4, vector4>;
+
+	c0: vector4;
+	c1: vector4;
+	c2: vector4;
+	c3: vector4;
+	m01: number;
+	m02: number;
+	m03: number;
+	m04: number;
+	m11: number;
+	m12: number;
+	m13: number;
+	m14: number;
+	m21: number;
+	m22: number;
+	m23: number;
+	m24: number;
+	m31: number;
+	m32: number;
+	m33: number;
+	m34: number;
+};
+
+type quaternion = number & {
+	/**
+	 * Multiplication Operator for Matrix4
+	 * @see {@link https://typescripttolua.github.io/docs/advanced/language-extensions#operator-map-types|TSTL Docs}
+	 */
+	mul: LuaMultiplicationMethod<quaternion, quaternion>;
+
+	x: number;
+	y: number;
+	z: number;
+	w: number;
+};
+
+// =^..^=   =^..^=   =^..^=    =^..^=    =^..^=    =^..^=    =^..^= //
+
+/**
+ * All ids in the engine are represented as hashes, so a string needs to be hashed
+ * before it can be compared with an id.
+ * @param s  string to hash
+ * @returns hash  a hashed string
+ * @see {@link https://defold.com/ref/stable/builtins/#hash:s|API Documentation}
+ */
+declare function hash(s: string): hash;
+
+/**
+ * Returns a hexadecimal representation of a hash value.
+ * The returned string is always padded with leading zeros.
+ * @param h  hash value to get hex string for
+ * @returns hex  hex representation of the hash
+ * @see {@link https://defold.com/ref/stable/builtins/#hash_to_hex:h|API Documentation}
+ */
+declare function hash_to_hex(h: hash): string;
+
+/**
+ * Pretty printing of Lua values. This function prints Lua values
+ * in a manner similar to +print()+, but will also recurse into tables
+ * and pretty print them. There is a limit to how deep the function
+ * will recurse.
+ * @param v  value to print
+ * @see {@link https://defold.com/ref/stable/builtins/#pprint:v|API Documentation}
+ */
+declare function pprint(...v: any[]): void;

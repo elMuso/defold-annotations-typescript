@@ -69,8 +69,13 @@ function is_blacklisted(list: string[], item: string): boolean {
 
 function sanitize(input: string): string {
 	let res = input;
-	res = input.replace(/\<div/g, "\n@example\n```lua\n<div");
+	res = input.replace(/\<div/g, "```lua\n<div");
 	res = res.replace(/\<\/div\>/g, "</div>\n```");
+	res = res.replace(/\<li\>\n\<dl\>\n\<dt\>\<code\>/g, "- ");
+	res = res.replace(/\<li\>/g, "<li>- ");
+	res = res.replace(/\n\<tr\>\n/g, "<tr>");
+	res = res.replace(/\n\<\/tr\>\n/g, "</tr>");
+	res = res.replace(/\<br\/\>/g, "<br/>;");
 	res = res.replace(/<\/?[^>]+>/g, "");
 	return decode(res);
 }

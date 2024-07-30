@@ -1,7 +1,6 @@
 import { buffer } from "stream/consumers";
 import config from "./config";
 import {
-	MModule,
 	MSingleItem,
 	MFunc,
 	MType,
@@ -26,7 +25,6 @@ function parse_documentation(
 	description: string | undefined,
 	examples: string | undefined
 ): string {
-	if (!settings.generate_documentation) return "";
 	let documentation = "";
 	if (brief && description && brief != description) {
 		documentation =
@@ -40,10 +38,11 @@ function parse_documentation(
 		examples != "" &&
 		settings.generate_documentation_examples
 	) {
-		documentation = documentation + "\n\n" + Utils.sanitize(examples);
+		documentation =
+			documentation + "\n@example\n" + Utils.sanitize(examples);
 	}
 
-	return removeEmptyLines(documentation);
+	return documentation;
 }
 
 function variable(buffer: any[], name: string, element: MSingleItem) {
@@ -149,14 +148,17 @@ function property(
 	element: MSingleItem,
 	rName: string
 ) {
+	let readonly = element.description.includes("READ ONLY");
 	let data: MProperty = {
 		type: extract_property_type(element.brief),
 		name: name,
-		documentation: parse_documentation(
-			element.brief,
-			element.description,
-			element.examples
-		),
+		documentation:
+			(readonly ? "READ ONLY: " : "") +
+			parse_documentation(
+				element.brief,
+				element.description,
+				element.examples
+			),
 		tag: MType.PROPERTY,
 		owner: rName,
 	};
