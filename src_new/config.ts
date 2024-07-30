@@ -173,7 +173,7 @@ const config = {
 		},
 		"gui.play_particlefx": {
 			param_table_emitter_state_function:
-				"(self: any, node: hash|nil, emitter: hash, state: constant) => void",
+				"(self: any, node?: hash, emitter: hash, state: constant) => void",
 		},
 		"html5.set_interaction_listener": {
 			param_table_callback: "(self: any) => void | nil",
@@ -190,14 +190,14 @@ const config = {
 		},
 		"gui.play_flipbook": {
 			param_table_play_properties:
-				"{ offset:number|nil, playback_rate:number|nil }",
+				"{ offset?:number, playback_rate?:number }",
 			param_table_complete_function: "(self: any, node: node) => void",
 		},
 		"gui.stop_particlefx": {
-			param_table_options: "{ clear:boolean|nil }",
+			param_table_options: "{ clear?:boolean }",
 		},
 		"json.decode": {
-			param_table_options: "{ decode_null_as_userdata:boolean|nil }",
+			param_table_options: "{ decode_null_as_userdata?:boolean }",
 		},
 		"json.encode": {
 			param_table_options: "{ encode_empty_table_as_object:string }",
@@ -220,18 +220,17 @@ const config = {
 				"(self:any, id:hash, emitter:hash, state:constant) => void",
 		},
 		"particlefx.stop": {
-			param_table_options: "{ clear:boolean|nil }",
+			param_table_options: "{ clear?:boolean }",
 		},
 		"sprite.play_flipbook": {
 			param_table_play_properties: "{offset:number,playback_rate:number}",
 			param_table_complete_function:
 				"(self:any, message_id:hash, message:{current_tile:number,id:hash}, sender:url)=>void",
-			param_table_options:
-				"{ offset:number|nil, playback_rate:number|nil }",
+			param_table_options: "{ offset?:number, playback_rate?:number }",
 		},
 		"sound.play": {
 			param_table_play_properties:
-				"{ delay:number|nil, gain:number|nil, pan:number|nil, speed:number|nil }",
+				"{ delay?:number, gain?:number, pan?:number, speed?:number }",
 			param_table_complete_function:
 				"(self:any, message_id:hash, message:{play_id:number}, sender:url)=>void",
 		},
@@ -252,7 +251,7 @@ const config = {
 		},
 		"model.play_anim": {
 			param_table_play_properties:
-				"{ blend_duration:number|nil, offset:number|nil, playback_rate:number|nil}",
+				"{ blend_duration?:number, offset?:number, playback_rate?:number}",
 			param_table_complete_function:
 				"(self:any, message_id:hash, message:{animation_id:hash, playback:constant}, sender:url) => void",
 		},
@@ -267,21 +266,21 @@ const config = {
 				"{ width:number, height:number, type:constant, buffer:buffer_data }",
 		},
 		"physics.get_joint_properties": {
-			return_table_properties: "{ collide_connected:boolean|nil }",
+			return_table_properties: "{ collide_connected?:boolean }",
 		},
 		"physics.raycast": {
 			param_table_groups: "hash[]",
-			param_table_options: "{ all:boolean|nil }",
+			param_table_options: "{ all?:boolean }",
 			return_table_result:
 				"physics.raycast_response[]|physics.raycast_response|nil", //? The documentation says it returns a array but the examples show it can return nil or single
 		},
 		"physics.get_shape": {
 			return_table_table:
-				"{ type:number|nil, diameter:number|nil, dimensions:vector3|nil, height:number|nil }",
+				"{ type?:number, diameter?:number, dimensions?:vector3, height?:number }",
 		},
 		"physics.set_shape": {
 			param_table_table:
-				"{ diameter:number|nil, dimensions:vector3|nil, height:number|nil }",
+				"{ diameter?:number, dimensions?:vector3, height?:number }",
 		},
 		"physics.set_listener": {
 			param_table_callback:
@@ -302,15 +301,14 @@ const config = {
 		},
 		"resource.create_texture": {
 			param_table_table:
-				"{ type:number, width:number, height:number, format:number, flags:number|nil, max_mipmaps:number|nil, compression_type:number|nil}",
+				"{ type:number, width:number, height:number, format:number, flags?:number, max_mipmaps?:number, compression_type?:number}",
 		},
 		"resource.create_texture_async": {
 			param_table_table:
-				"{ type:number, width:number, height:number, format:number, flags:number|nil, max_mipmaps:number|nil, compression_type:number|nil}",
+				"{ type:number, width:number, height:number, format:number, flags?:number, max_mipmaps?:number, compression_type?:number}",
 		},
 		"resource.set_texture": {
-			param_table_table:
-				"{ type:number, width:number, height:number, format:number, x:number|nil, y:number|nil, mipmap:number|nil, compression_type:number|nil}",
+			param_table_table: "TextureHeader",
 		},
 		"resource.get_texture_info": {
 			return_table_table:
@@ -318,37 +316,36 @@ const config = {
 		},
 		"resource.get_text_metrics": {
 			param_table_options:
-				"{ width:number|nil, leading:number|nil, tracking:number|nil, line_break:boolean|nil}",
+				"{ width?:number, leading?:number, tracking?:number, line_break?:boolean}",
 			return_table_metrics:
 				"{ width:number, height:number, max_ascent:number, max_descent:number }",
 		},
 		"resource.create_buffer": {
 			param_table_table:
-				"{ buffer:buffer_data, transfer_ownership:boolean|nil }",
+				"{ buffer:buffer_data, transfer_ownership?:boolean }",
 		},
 		"resource.set_buffer": {
-			param_table_table: "{ transfer_ownership: boolean|nil }",
+			param_table_table: "{ transfer_ownership?: boolean }",
 		},
 		"render.draw": {
 			param_table_options:
-				"{ frustum:matrix4|nil, frustum_planes:number|nil, constants:constant_buffer|nil }",
+				"{ frustum?:matrix4, frustum_planes?:number, constants?:constant_buffer }",
 		},
 		"render.draw_debug3d": {
-			param_table_options:
-				"{ frustum:matrix4|nil, frustum_planes:number|nil }",
+			param_table_options: "{ frustum?:matrix4, frustum_planes?:number }",
 		},
 		"render.predicate": {
 			param_table_tags: "(string|hash)[]",
 		},
 		"render.render_target": {
 			param_table_parameters:
-				"Record<number, { format:number, width:number, height:number, min_filter:number|nil, mag_filter:number|nil, u_wrap:number|nil, v_wrap:number|nil, flags:number|nil}>",
+				"Record<number, { format:number, width:number, height:number, min_filter?:number, mag_filter?:number, u_wrap?:number, v_wrap?:number, flags?:number}>",
 		},
 		"render.set_camera": {
-			param_table_options: "{ use_frustum:boolean|nil }",
+			param_table_options: "{ use_frustum?:boolean }",
 		},
 		"render.set_render_target": {
-			param_table_options: "{ transient:number[]|nil }",
+			param_table_options: "{ transient?:number[] }",
 		},
 		"sound.get_groups": {
 			return_table_groups: "hash[]",
@@ -368,9 +365,9 @@ const config = {
 			return_table_retN: "object|nil",
 		},
 		"sys.get_sys_info": {
-			param_table_options: "{ ignore_secure:boolean|nil }",
+			param_table_options: "{ ignore_secure?:boolean }",
 			return_table_sys_info:
-				"{ device_model:string|nil, manufacturer:string|nil, system_name:string, system_version:string, api_version:string, language:string, device_language:string, territory:string, gmt_offset:number, device_ident:string|nil, user_agent:string|nil }",
+				"{ device_model?:string, manufacturer:string|nil, system_name:string, system_version:string, api_version:string, language:string, device_language:string, territory:string, gmt_offset:number, device_ident?:string, user_agent?:string }",
 		},
 		"sys.get_application_info": {
 			return_table_app_info: "{ installed:boolean }",
@@ -381,7 +378,7 @@ const config = {
 		},
 		"sys.get_ifaddrs": {
 			return_table_ifaddrs:
-				"{ name:string, address:string|nil, mac:string|nil, up:boolean, running:boolean }",
+				"{ name:string, address?:string, mac?:string, up:boolean, running:boolean }",
 		},
 		"sys.load_buffer_async": {
 			param_table_status_callback:
@@ -392,7 +389,7 @@ const config = {
 				"(source:string, message:string, traceback:string)=>void",
 		},
 		"sys.open_url": {
-			param_table_attributes: "{ target:string|nil, name:string|nil }",
+			param_table_attributes: "{ target?:string, name?:string }",
 		},
 		"timer.get_info": {
 			return_table_data:

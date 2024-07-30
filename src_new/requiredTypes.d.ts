@@ -37,6 +37,17 @@ type matrix4 = {
 	m33: number;
 };
 
+type TextureHeader = {
+	type: number;
+	width: number;
+	height: number;
+	format: number;
+	x?: number;
+	y?: number;
+	num_mip_maps: number | nil;
+	compression_type?: number;
+};
+
 declare namespace on_input {
 	type touch = {
 		/** Accelerometer x value (if present).*/
@@ -209,7 +220,7 @@ type socket_client = object; //? Is this right?
 type socket_master = object; //? Is this right?
 type socket_unconnected = object; //? Is this right?
 type buffer_stream = any; //? Is this right?
-type buffer_data = any; //? Is this right?
+type buffer_data = object; //? Is this right?
 type buffer = object; //? Is this right?
 type b2BodyType = any; //? Is this right?
 type b2Body = any; //? Is this right?
