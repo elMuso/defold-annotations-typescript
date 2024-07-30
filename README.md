@@ -27,7 +27,7 @@ Now you should be good to go.
 These annotations can be used by anyone just by dragging the file to your project
 
 -   index.d.ts contains the Defold API, constants and functions
--   dfld.ts contains a useful `dfld` object that can serve as a helper to avoid sending messages (prefix msg*) or to look up the documentation of something. It also contains the propertyes of each module (prefix p*) and the return messages to use on on*message (prefix msg_id*)
+-   dmsg.ts contains a useful `dmsg` object that can serve as a helper to avoid sending messages or to look up the documentation of something. dprop.ts also contains the propertyes of each module
 
 ## Manual Generation
 
