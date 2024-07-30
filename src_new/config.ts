@@ -173,7 +173,7 @@ const config = {
 		},
 		"gui.play_particlefx": {
 			param_table_emitter_state_function:
-				"(self: any, node?: hash, emitter: hash, state: constant) => void",
+				"(self: any, emitter: hash, state: constant, node?: hash) => void",
 		},
 		"html5.set_interaction_listener": {
 			param_table_callback: "(self: any) => void | nil",
