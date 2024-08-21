@@ -1,10 +1,10 @@
 /*[[
-    config.ts
-    https://github.com/elMuso/defold-annotations-typescript
-    with some code from on github.com/astrochili/defold-annotations
-    Copyright (c) 2024 elMuso
-    MIT license. See LICENSE for details.
-    --*/
+	config.ts
+	https://github.com/elMuso/defold-annotations-typescript
+	with some code from on github.com/astrochili/defold-annotations
+	Copyright (c) 2024 elMuso
+	MIT license. See LICENSE for details.
+	--*/
 import { decode } from "html-entities";
 import settings from "./settings";
 import fs from "node:fs";

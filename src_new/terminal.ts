@@ -1,10 +1,10 @@
 /*[[
-    terminal.ts
-    https://github.com/elMuso/defold-annotations-typescript
-    with some code from on github.com/astrochili/defold-annotations
-    Copyright (c) 2024 elMuso
-    MIT license. See LICENSE for details.
-    --*/
+	terminal.ts
+	https://github.com/elMuso/defold-annotations-typescript
+	with some code from on github.com/astrochili/defold-annotations
+	Copyright (c) 2024 elMuso
+	MIT license. See LICENSE for details.
+	--*/
 import { Utils } from "./utils";
 import fs from "node:fs";
 import decompress from "decompress";

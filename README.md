@@ -27,7 +27,8 @@ Now you should be good to go.
 These annotations can be used by anyone just by dragging the file to your project
 
 -   index.d.ts contains the Defold API, constants and functions
--   dmsg.ts contains a useful `dmsg` object that can serve as a helper to avoid sending messages or to look up the documentation of something. dprop.ts also contains the propertyes of each module
+-   dmsg.ts contains a useful `dmsg` object that can serve as a helper to know what type of data a documented message expects. Ex: `dmsg.sound.play_sound("#gameobject", {play_id:1, delay: 2, gain:0.5})` ()
+-   dprop.ts contains documented properties of each module, this properties are sent using msg.post(id, property, value). Ex: `msg.post("", dprop.go.position, vmath.vector3(10, 5, 0))`
 
 ## Manual Generation
 
