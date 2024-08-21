@@ -4,15 +4,15 @@
 /* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /*[[
-    requiredTypes.d.ts
-    https://github.com/elMuso/defold-annotations-typescript
-    with some code from on github.com/astrochili/defold-annotations
-    Copyright (c) 2024 elMuso
-    MIT license. See LICENSE for details.
+	requiredTypes.d.ts
+	https://github.com/elMuso/defold-annotations-typescript
+	with some code from on github.com/astrochili/defold-annotations
+	Copyright (c) 2024 elMuso
+	MIT license. See LICENSE for details.
 
-    This is to make typescript aware of some defold base types. While
-    in the original library this was done via config. Here it is injected into the final index.d.ts
-    --*/
+	This is to make typescript aware of some defold base types. While
+	in the original library this was done via config. Here it is injected into the final index.d.ts
+	--*/
 /** Objects that are treated as primitives while i figure out how they work */
 type resource_data = object; //? Is this right?
 type float = number;
@@ -40,14 +40,22 @@ type table_array = any[]; //? Is this right?
 type table_map = Record<any, any>; //? Is this right?
 ///
 
+///Keep this for retrocompatibility with other libraries
+declare namespace vmath {
+	type vector3 = globalThis.vector3;
+	type vector4 = globalThis.vector4;
+	type matrix4 = globalThis.matrix4;
+	type quaternion = globalThis.quaternion;
+}
+
 declare namespace resource {
 	type animation = {
 		/** Optional flip the animation horizontally, the default value is false*/
-		flip_horizontal: boolean | nil;
+		flip_horizontal?: boolean;
 		/** Optional flip the animation vertically, the default value is false*/
-		flip_vertical: boolean | nil;
+		flip_vertical?: boolean;
 		/** Optional fps of the animation, the default value is 30*/
-		fps: integer | nil;
+		fps?: integer;
 		/** Index to the last geometry of the animation (non-inclusive). Indices are lua based and must be in the range of 1 .. in atlas.*/
 		frame_end: integer;
 		/** Index to the first geometry of the animation. Indices are lua based and must be in the range of 1 .. in atlas.*/
@@ -57,7 +65,7 @@ declare namespace resource {
 		/** The id of the animation, used in e.g sprite.play_animation*/
 		id: string;
 		/** Optional playback mode of the animation, the default value is go.PLAYBACK_ONCE_FORWARD*/
-		playback: constant | nil;
+		playback?: constant;
 		/** The width of the animation*/
 		width: integer;
 	};
@@ -71,7 +79,7 @@ declare namespace resource {
 	};
 	type geometry = {
 		/** The name of the geometry. Used when matching animations between multiple atlases*/
-		id: string;
+		id?: string;
 		/** A list of the indices of the geometry in the form { i0, i1, i2, ..., in }. Each tripe in the list represents a triangle.*/
 		indices: number[];
 		/** A list of the uv coordinates in texture space of the geometry in the form of { u0, v0, u1, v1, ..., un, vn }*/
@@ -88,7 +96,7 @@ type TextureHeader = {
 	format: number;
 	x?: number;
 	y?: number;
-	num_mip_maps: number | nil;
+	num_mip_maps?: number;
 	compression_type?: number;
 };
 
@@ -353,7 +361,7 @@ type matrix4 = number & {
 	 * @see {@link https://typescripttolua.github.io/docs/advanced/language-extensions#operator-map-types|TSTL Docs}
 	 */
 	mul: LuaMultiplicationMethod<number, matrix4> &
-		LuaMultiplicationMethod<vector4, vector4>;
+	LuaMultiplicationMethod<vector4, vector4>;
 
 	c0: vector4;
 	c1: vector4;

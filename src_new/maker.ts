@@ -45,7 +45,12 @@ function parse_documentation(
 	return documentation;
 }
 
-function variable(buffer: any[], name: string, element: MSingleItem) {
+function variable(
+	buffer: any[],
+	name: string,
+	element: MSingleItem,
+	rName: string
+) {
 	let data: MVar = {
 		name: name,
 		type: "nil",
@@ -55,6 +60,7 @@ function variable(buffer: any[], name: string, element: MSingleItem) {
 			element.description,
 			element.examples
 		),
+		owner: rName,
 	};
 	buffer.push(data);
 }
@@ -170,39 +176,39 @@ function replace_params(
 	isParameter: boolean
 ): string[] | undefined {
 	let root = isParameter ? element.parameters : element.returnvalues;
-	let rval = config.specific_replace as unknown as [string: [string: string]];
-	let sub = isParameter ? "param_table_" : "return_table_";
+	// let rval = config.specific_replace as unknown as [string: [string: string]];
+	// let sub = isParameter ? "param_table_" : "return_table_";
 
-	if (!root) {
-		return [];
-	}
-	for (const name in rval) {
-		if (!has(rval, name)) continue;
-		const replacebundle = rval[name];
-		if (name != element.name) continue;
+	// if (!root) {
+	// 	return [];
+	// }
+	// for (const name in rval) {
+	// 	if (!has(rval, name)) continue;
+	// 	const replacebundle = rval[name];
+	// 	if (name != element.name) continue;
 
-		for (const bundlename in replacebundle) {
-			if (!has(replacebundle, bundlename)) continue;
+	// 	for (const bundlename in replacebundle) {
+	// 		if (!has(replacebundle, bundlename)) continue;
 
-			const bundlevalue = replacebundle[bundlename];
-			let rname = bundlename.replace(sub, "");
-			for (const val of root) {
-				// console.log(`REPLACING: ${val.type} with ${bundlevalue}`);
-				// FIXME this is not working. Don't have more energy to continue...
-				let nm = val.name.replace("[", "");
-				nm = nm.replace("]", "");
-				nm = nm.replace("-", "_");
-				if (nm == rname) {
-					val.types = [bundlevalue];
-				}
-			}
-		}
-	}
+	// 		const bundlevalue = replacebundle[bundlename];
+	// 		let rname = bundlename.replace(sub, "");
+	// 		for (const val of root) {
+	// 			// console.log(`REPLACING: ${val.type} with ${bundlevalue}`);
+	// 			// FIXME this is not working. Don't have more energy to continue...
+	// 			let nm = val.name.replace("[", "");
+	// 			nm = nm.replace("]", "");
+	// 			nm = nm.replace("-", "_");
+	// 			if (nm == rname) {
+	// 				val.types = [bundlevalue];
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 	return root;
 }
 
-function addfunction(buffer: any[], name: string, element: MSingleItem): void {
+function addfunction(buffer: any[], name: string, element: MSingleItem, owner: string): void {
 	//! Check if the function is blacklisted
 	for (const val of config.ignored_functions) {
 		if (name == val) {
@@ -216,6 +222,7 @@ function addfunction(buffer: any[], name: string, element: MSingleItem): void {
 			}
 		}
 	}
+
 	let data: MFunc = {
 		name: name,
 		params: extract_parameters(replace_params(element, true)),
@@ -226,6 +233,7 @@ function addfunction(buffer: any[], name: string, element: MSingleItem): void {
 		),
 		return_value: extract_parameters(replace_params(element, false)),
 		tag: MType.FUNCTION,
+		owner: owner
 	};
 	// local rvalues = replace_params(element,false)
 

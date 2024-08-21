@@ -1,10 +1,10 @@
 /*[[
-    parser.ts
-    https://github.com/elMuso/defold-annotations-typescript
-    with some code from on github.com/astrochili/defold-annotations
-    Copyright (c) 2024 elMuso
-    MIT license. See LICENSE for details.
-    */
+	parser.ts
+	https://github.com/elMuso/defold-annotations-typescript
+	with some code from on github.com/astrochili/defold-annotations
+	Copyright (c) 2024 elMuso
+	MIT license. See LICENSE for details.
+	*/
 
 import config from "./config";
 import Maker from "./maker";
@@ -24,8 +24,8 @@ function parse_path(json_path: string): any {
 	if (Utils.is_blacklisted(config.ignored_docs, filename)) {
 		Utils.log(
 			'[-] The file "' +
-				json_path +
-				"\" is skipped because it's on the ignore list"
+			json_path +
+			"\" is skipped because it's on the ignore list"
 		);
 		return {};
 	} else {
@@ -135,9 +135,13 @@ function parse_module(
 		let utype = single.type;
 		// type can be VARIABLE, FUNCTION ,PROPERTY, MESSAGE
 		if (utype == MType.VARIABLE) {
-			Maker.variable(itemIndex, uniqueName, single);
+			Maker.variable(itemIndex, uniqueName, single, info.namespace);
 		} else if (utype == MType.FUNCTION) {
-			Maker.addfunction(itemIndex, uniqueName, single);
+			let localname = info.namespace
+			if (nm.includes(".")) {
+				localname = nm.split(".")[0];
+			}
+			Maker.addfunction(itemIndex, uniqueName, single, localname);
 		} else if (utype == MType.PROPERTY) {
 			//! Properties in defold use go_set, generate accordingly
 			let msgModule = createIfNotExisting(bufferIndex, "dprop", {

@@ -4,12 +4,14 @@ export type MFunc = {
 	params: MParameter[]; //-can be nil
 	return_value: MParameter[]; //can be nil
 	tag: string; // FUNCTION
+	owner: string;
 };
 export type MVar = {
 	documentation: string;
 	name: string;
 	type: string;
 	tag: MType; // VARIABLE
+	owner: string;
 };
 
 export type MProperty = {

@@ -1,3 +1,5 @@
+import config from "./config";
+import { patch_index } from "./patches";
 import settings from "./settings";
 import {
 	MModule,
@@ -43,6 +45,42 @@ function gen_return(input: MParameter[]): string {
 	return ": " + output[0];
 }
 
+function patch(line: string, namespace: string): string {
+	let replacedToken = ""; //In an ideal world this is called with the same string
+	for (const key in patch_index) {
+		if (namespace == key) {
+			let patches = patch_index[key];
+			for (const query in patches) {
+				let vals = query.split("|||");
+				if (vals.length != 2) {
+					Utils.log("Error, invalid query for " + namespace + " - " + query)
+
+					return line;
+				}
+				if (line.includes(vals[0])) {
+					//Check if it's the same query, otherwise throw a warning 
+					if (vals[0] != replacedToken && replacedToken != "") {
+						Utils.log("Warning, multiple query for " + namespace + " - " + query + "   ... To broad!!")
+					}
+					//We have a match. now replace
+					if (!line.includes(vals[1])) {
+						Utils.log(line)
+						Utils.log("Error, invalid query value for " + namespace + " - " + query)
+						return line
+					}
+					const cacheName = namespace + "|||" + query;
+					if (!config.used_querys.includes(cacheName)) {
+						config.used_querys.push(cacheName)
+					}
+					line = line.replace(vals[1], patches[query])
+					replacedToken = vals[0];
+				}
+			}
+		}
+	}
+	return line;
+}
+
 function generate_function(input: MFunc): string {
 	let lout = "";
 	if (settings.generate_documentation_parameter_info) {
@@ -62,8 +100,8 @@ function generate_function(input: MFunc): string {
 			"\nfunction delete$(id: string | hash | url | hash[]| Record<any,any>, recursive?: boolean):void;\nexport { delete$ as delete }"
 		);
 	}
-	output =
-		output +
+	let funcline =
+
 		"\nexport function " +
 		input.name +
 		"(" +
@@ -71,6 +109,8 @@ function generate_function(input: MFunc): string {
 		")" +
 		gen_return(input.return_value) +
 		";\n";
+
+	output = output + patch(funcline, input.owner);
 	return output;
 }
 
@@ -83,9 +123,10 @@ function generate_variable(input: MVar): string {
 	if (typerep == "nil") {
 		typerep = "constant";
 	}
+	let category = input.name.substring(0, input.name.lastIndexOf("_"));
 	let output = make_documentation(input.documentation);
-	output = output + "\nexport let " + input.name + ": " + typerep;
-	return output + ";";
+	output += `\nexport const ${input.name}:number & { readonly __brand: "${input.owner}.${category}" };`;
+	return output;
 }
 
 function make_documentation(docs: string): string {
@@ -179,8 +220,8 @@ function create_optional_output(input: MModule): string {
 				itm.owner == "sys"
 					? "@system:"
 					: itm.owner == "render"
-					? "@render:"
-					: "";
+						? "@render:"
+						: "";
 			localoutput =
 				localoutput +
 				(hasData
@@ -274,6 +315,20 @@ function generate(input: MModule[]): {
 		}
 	}
 	const requiredTypes = Utils.read_file("./src_new/requiredTypes.d.ts");
+	// Check for unused or unmatched patches
+	let appliedpatches = true;
+	for (const namespace in patch_index) {
+		for (const pattern in patch_index[namespace]) {
+			const fullname = namespace + "|||" + pattern;
+			if (!config.used_querys.includes(fullname)) {
+				appliedpatches = false;
+				Utils.log(`WARNING: Unused patch at Namespace: ${namespace} ,with pattern: ${pattern}`)
+			}
+		}
+	}
+	if (appliedpatches) {
+		Utils.log("Succesfully applied patches from patches.ts!")
+	}
 	return {
 		typedata: requiredTypes + output,
 		messagedata: msg_output,
