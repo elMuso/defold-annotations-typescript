@@ -43,7 +43,10 @@ By default it uses Defold version 1.9.1 , you can change this by editing the src
 
 ### Todo
 
--   [ ] Use namespace specific constants to have specific parameter return values. Maybe enums?
--   [ ] Test the code and table, table_array, table_map
+-   [x] Use namespace specific constants to have specific parameter return values. Maybe enums?
+-   [x] Expand table declarations from the official documentation
+-   [ ] Remove implementations of table_array and table_map to more specific objects
 -   [ ] Expand table declarations from the official documentation
+-   [ ] Make the definitions more compatible with https://github.com/ts-defold/library types
+-   [ ] Improve documentation generation
 -   [ ] Implement on a project
